@@ -16,7 +16,7 @@ wss.on('connection', (ws) => {
         ws.send(answer);
     });
 
-    //send immediate feedback to the incoming connection    
+    //send immediate feedback to the incoming connection
     ws.send(JSON.stringify('Connected to WebSocket!'));
 });
 
