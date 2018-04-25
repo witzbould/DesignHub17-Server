@@ -17,7 +17,7 @@ wss.on('connection', (ws) => {
     });
 
     //send immediate feedback to the incoming connection    
-    ws.send(JSON.stringify('Connected to WebSocket!'));
+    // ws.send(JSON.stringify('Connected to WebSocket!'));
 });
 
 function handleResponse(response) {
@@ -28,6 +28,13 @@ function handleResponse(response) {
             break;
         case 'PLAYPAUSE':
             console.log('PLAYPAUSE received');
+            break;
+        case 'PLAY':
+            console.log('PLAY received');
+            break;
+        case 'PAUSE':
+            console.log('PAUSE received');
+            break;
         default:
             console.warn('Unkown Type', res);
     }
