@@ -2,6 +2,8 @@ let express = require('express');
 let Websocket = require('ws');
 let http = require('http');
 
+// baudrate: 57600
+
 const app = express();
 
 //initialize a simple http server
