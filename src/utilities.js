@@ -47,7 +47,7 @@ const loggerStdoutNl = (data) => loggerStdout(data, true)
 
 
 const jsonParse = (data) => {
-    const ret;
+    let ret;
 
     try {
         ret = JSON.parse(data);
