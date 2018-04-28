@@ -45,10 +45,31 @@ const loggerStdout = (data, eol) => {
 
 const loggerStdoutNl = (data) => loggerStdout(data, true)
 
+
+const jsonParse = (data) => {
+    const ret;
+
+    try {
+        ret = JSON.parse(data);
+    }
+    /**
+     * @param {SyntaxError} error json parse throws SyntaxError
+     */
+    catch (error) {
+        ret = {
+            type: error.name
+            , payload: error.message
+        };
+    }
+
+    return ret;
+}
+
 module.exports = {
     debugLoggerStderr
     , loggerStderr
     , loggerStderrNl
     , loggerStdout
     , loggerStdoutNl
+    , jsonParse
 }

@@ -1,21 +1,10 @@
 const express = require('express');
 const app = express();
 const Websocket = require('ws');
-// const http = require('http');
-const {
-    debugLoggerStderr
-    , loggerStderr
-    , loggerStderrNl
-    , loggerStdout
-    , loggerStdoutNl
-} = require('./src/utilities');
+const { loggerStdoutNl } = require('./src/utilities');
+const wsHandler = require('./src/wsHandler');
 
 // baudrate: 57600
-
-
-
-//initialize a simple http server
-// const server = http.createServer(app);
 
 
 app.use(express.static('gui'));
@@ -29,32 +18,9 @@ const server = app.listen(1337, () => {
 });
 
 
-
-
-//initialize the WebSocket server instance
 const wss = new Websocket.Server({ server });
 
-wss.on('connection', (ws) => {
-    ws.on('message', (message) => {
-        let answer = handleResponse(message);
-        ws.send(answer);
-    });
-});
-
-function handleResponse(response) {
-    let res = JSON.parse(response);
-    switch (res.type) {
-        case 'UPDATE_ANNOTATIONS':
-            loggerStdout('received: %s');
-            loggerStdoutNl(JSON.stringify(res.payload));
-            break;
-        case 'PLAYPAUSE':
-            loggerStdoutNl('PLAYPAUSE received');
-            break;
-        default:
-            loggerStdout('Unkown Type: ');
-            loggerStdoutNl(res);
-    }
-
-    return JSON.stringify(response);
-}
+wss.on(
+    'connection'
+    , (ws) => ws.on('message', wsHandler.messageHandler)
+);
