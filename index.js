@@ -1,13 +1,35 @@
-let express = require('express');
-let Websocket = require('ws');
-let http = require('http');
+const express = require('express');
+const app = express();
+const Websocket = require('ws');
+// const http = require('http');
+const {
+    debugLoggerStderr
+    , loggerStderr
+    , loggerStderrNl
+    , loggerStdout
+    , loggerStdoutNl
+} = require('./src/utilities');
 
 // baudrate: 57600
 
-const app = express();
+
 
 //initialize a simple http server
-const server = http.createServer(app);
+// const server = http.createServer(app);
+
+
+app.use(express.static('gui'));
+
+app.get('/', function (req, res) {
+    res.sendFile(`${__dirname}/public/index.html`);
+});
+
+const server = app.listen(1337, () => {
+    loggerStdoutNl(server.address());
+});
+
+
+
 
 //initialize the WebSocket server instance
 const wss = new Websocket.Server({ server });
@@ -17,26 +39,22 @@ wss.on('connection', (ws) => {
         let answer = handleResponse(message);
         ws.send(answer);
     });
-
-    //send immediate feedback to the incoming connection
-    ws.send(JSON.stringify('Connected to WebSocket!'));
 });
 
 function handleResponse(response) {
     let res = JSON.parse(response);
     switch (res.type) {
         case 'UPDATE_ANNOTATIONS':
-            console.log('received: %s', JSON.stringify(res.payload));
+            loggerStdout('received: %s');
+            loggerStdoutNl(JSON.stringify(res.payload));
             break;
         case 'PLAYPAUSE':
-            console.log('PLAYPAUSE received');
+            loggerStdoutNl('PLAYPAUSE received');
+            break;
         default:
-            console.warn('Unkown Type', res);
+            loggerStdout('Unkown Type: ');
+            loggerStdoutNl(res);
     }
-    return JSON.stringify(response)
-}
 
-//start our server
-server.listen(3000, () => {
-    console.log(`Server started on port ${server.address().port} :)`);
-});
+    return JSON.stringify(response);
+}
