@@ -1,24 +1,27 @@
 let express = require('express');
 let Websocket = require('ws');
 let http = require('http');
+let socketIo = require('socket.io');
 
 const app = express();
 
 //initialize a simple http server
 const server = http.createServer(app);
 
-//initialize the WebSocket server instance
-const wss = new Websocket.Server({ server });
+const io = socketIo(server);
 
-wss.on('connection', (ws) => {
-    ws.on('message', (message) => {
-        let answer = handleResponse(message);
-        ws.send(answer);
+io.on('connect', (socket) => {
+    console.log(`Connected client on port ${server.address().port}`);
+    socket.on('message', (m) => {
+        handleResponse(m);
+        // io.emit('message', m);
     });
 
-    //send immediate feedback to the incoming connection    
-    // ws.send(JSON.stringify('Connected to WebSocket!'));
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
 });
+
 
 function handleResponse(response) {
     let res = JSON.parse(response);
@@ -38,7 +41,7 @@ function handleResponse(response) {
         default:
             console.warn('Unkown Type', res);
     }
-    return JSON.stringify(response)
+    // return JSON.stringify(response)
 }
 
 //start our server
