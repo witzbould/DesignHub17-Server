@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
-const Websocket = require('ws');
+const socketIo = require('socket.io');
 const { loggerStderr, loggerStdoutNl } = require(`${__dirname}/src/utilities`);
+const socketIoHandler = require(`${__dirname}/src/socketIoHandler`);
 const spHandler = require(`${__dirname}/src/spHandler`);
-const wsHandler = require(`${__dirname}/src/wsHandler`);
 
 
 app.use(express.static('gui'));
@@ -17,12 +17,15 @@ const server = app.listen(1337, () => {
 });
 
 
-const wss = new Websocket.Server({ server });
+const io = socketIo(server);
 
-wss.on(
-    'connection'
-    , (ws) => ws.on('message', wsHandler.messageHandler)
-);
+io.on('connect', (socket) => {
+    socket.on('message', (message) => {
+        socketIoHandler.handleMessage(message);
+    });
+
+    socket.on('disconnect', loggerStdoutNl('Client disconnected'));
+});
 
 
 SerialPort
