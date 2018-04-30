@@ -1,5 +1,5 @@
 const SerialPort = require('serialport');
-const { baudRate, delimiter } = require(`${__dirname}/config/config`);
+const { baudRate, delimiter } = require(`${process.cwd()}/config/config`);
 const { loggerStdout, loggerStdoutNl } = require('./utilities');
 
 /**

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const socketIo = require('socket.io');
+const SerialPort = require('serialport');
 const { loggerStderr, loggerStdoutNl } = require(`${__dirname}/src/utilities`);
 const socketIoHandler = require(`${__dirname}/src/socketIoHandler`);
 const spHandler = require(`${__dirname}/src/spHandler`);
