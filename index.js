@@ -22,10 +22,10 @@ const io = socketIo(server);
 
 io.on('connect', (socket) => {
     socket.on('message', (message) => {
-        socketIoHandler.handleMessage(message);
+        socketIoHandler.messageHandler(message);
     });
 
-    socket.on('disconnect', loggerStdoutNl('Client disconnected'));
+    socket.on('disconnect', console.log);
 });
 
 
