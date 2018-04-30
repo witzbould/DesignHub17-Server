@@ -38,7 +38,7 @@ const loggerStderrNl = (data) => loggerStderr(data, true)
 const loggerStdout = (data, eol) => {
     process.stdout.write(inspect(data))
     if (eol === true)
-        process.stderr.write(EOL)
+        process.stdout.write(EOL)
 
     return data
 }
