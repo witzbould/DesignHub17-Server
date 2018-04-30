@@ -25,7 +25,7 @@ io.on('connect', (socket) => {
         socketIoHandler.messageHandler(message);
     });
 
-    socket.on('disconnect', console.log);
+    socket.on('disconnect', loggerStdoutNl);
 });
 
 
