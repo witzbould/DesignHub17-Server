@@ -28,12 +28,5 @@ io.on('connect', (socket) => {
     socket.on('disconnect', loggerStdoutNl);
 });
 
+const bla = spHandler(socketIoHandler.messageHandler);
 
-SerialPort
-    .list()
-    .then((ports) => ports.map(spHandler.portHandler))
-    .then((parsers) => parsers.forEach((parser) => {
-        parser.on('data', spHandler.dataHandler);
-        parser.on('error', loggerStderr);
-    }))
-    .catch(loggerStderr);
