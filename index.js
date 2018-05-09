@@ -22,3 +22,9 @@ const server = app.listen(3000, () => {
 const io = socketIo(server);
 const socH = socketHandler(io);
 const bla = spHandler(socH);
+
+
+process.on('unhandledRejection', (reason, p) => {
+    // application specific logging, throwing an error, or other logic here
+    process.stderr.write(`Unhandled Rejection at: Promise ${inspect(p)}\nreason: ${inspect(reason)}`)
+})
