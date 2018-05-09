@@ -1,11 +1,12 @@
 const express = require('express');
-const app = express();
 const socketIo = require('socket.io');
 const SerialPort = require('serialport');
-const { loggerStderr, loggerStdoutNl } = require(`${__dirname}/src/utilities`);
-const socketIoHandler = require(`${__dirname}/src/socketIoHandler`);
+const { loggerStdoutNl } = require(`${__dirname}/src/utilities`);
+const socketHandler = require(`${__dirname}/src/socketHandler`);
 const spHandler = require(`${__dirname}/src/spHandler`);
 
+
+const app = express();
 
 app.use(express.static('gui'));
 
@@ -19,14 +20,7 @@ const server = app.listen(1337, () => {
 
 
 const io = socketIo(server);
+let socH = socketHandler(io);
 
-io.on('connect', (socket) => {
-    socket.on('message', (message) => {
-        socketIoHandler.messageHandler(message);
-    });
-
-    socket.on('disconnect', loggerStdoutNl);
-});
-
-const bla = spHandler(socketIoHandler.messageHandler);
+const bla = spHandler(socH);
 
