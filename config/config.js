@@ -5,6 +5,6 @@ module.exports = {
         serialNumber: '5&763bb00&0&2'
     }
     , belt: {
-        serialNumber: '00BELT00'
+        serialNumber: '5&763bb00&0&1'
     }
 }
