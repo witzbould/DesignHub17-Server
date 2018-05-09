@@ -8,12 +8,20 @@ const { loggerStderr, loggerStderrNl, loggerStdout, loggerStdoutNl } = require('
 let bracelet = null;
 let belt = null;
 
-function spHandler() {
+function spHandler(socketHandler) {
+    this.init(socketHandler);
+}
+
+spHandler.prototype.init = function (socketHandler) {
+    const that = this;
     SerialPort
         .list()
-        .then((ports) => ports.map(this.portHandler))
-        .then((parsers) => parsers.forEach(this.parserHandler))
-        .then(() => loggerStdoutNl(this.beltPort))
+        .then((ports) => ports.map(that.portHandler.bind(that)))
+        .then((parsers) => parsers.map(that.parserHandler.bind(that)))
+        .then((data) => {
+            socketHandler.spHandler = that;
+            return data;
+        })
         .catch(loggerStderr);
 }
 
@@ -28,15 +36,15 @@ function spHandler() {
  *   vendorId: '10C4',
  *   productId: 'EA60' }
  */
-spHandler.prototype.portHandler = (port) => {
+spHandler.prototype.portHandler = function (port) {
     const sp = new SerialPort(port.comName, { baudRate: config.baudRate });
 
     switch (port.serialNumber) {
         case config.bracelet.serialNumber:
-            if (bracelet === null) bracelet = port;
+            if (bracelet === null) bracelet = sp;
             break;
         case config.belt.serialNumber:
-            if (belt === null) belt = port;
+            if (belt === null) belt = sp;
             break;
         default:
             break;
@@ -45,15 +53,15 @@ spHandler.prototype.portHandler = (port) => {
     return sp;
 }
 
-spHandler.prototype.readyHandler = (port) => {
+spHandler.prototype.readyHandler = function (port) {
     const ready = port.pipe(new Ready({ delimiter: 'A' }));
 
-    ready.on('ready', () => port.write(config.delimiter));
+    ready.on('ready', () => port.write(`C${config.delimiter}`));
 
     return ready;
 }
 
-spHandler.prototype.parserHandler = (ready) => {
+spHandler.prototype.parserHandler = function (ready) {
     const parser = ready.pipe(new Readline({ delimiter: config.delimiter }));
 
     parser.on('data', this.dataHandler);
@@ -62,7 +70,17 @@ spHandler.prototype.parserHandler = (ready) => {
     return parser;
 }
 
-spHandler.prototype.dataHandler = (data) => loggerStdoutNl(data);
+spHandler.prototype.emit = function (port, msg) {
+    if (this[port]) {
+        this[port].write(String(msg) + config.delimiter);
+    } else {
+        loggerStderrNl(`The specified port (${port}) is not available.`);
+    }
+}
+
+spHandler.prototype.dataHandler = function (data) {
+    loggerStdoutNl(data);
+}
 
 Object.defineProperties(spHandler.prototype, {
     braceletPort: {
@@ -78,4 +96,4 @@ Object.defineProperties(spHandler.prototype, {
 });
 
 
-module.exports = (messageHandler) => new spHandler(messageHandler);
+module.exports = (socketHandler) => new spHandler(socketHandler);
