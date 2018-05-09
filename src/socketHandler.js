@@ -13,7 +13,7 @@ function socketHandler(socketIo) {
 
     socketIo.on('connect', (socket) => {
         socket.on('message', (message) => { // that.messageHandler.bind(that)
-            that.messageHandler(message).bind(that);
+            that.messageHandler(message)
 
             socket.broadcast.emit('message', JSON.stringify({
                 action: 'BOBBLE_DIRECTION',
