@@ -17,20 +17,31 @@ const server = app.listen(3000, () => {
     loggerStdoutNl(server.address());
 });
 
-
 const io = socketIo(server);
 
 io.on('connect', (socket) => {
     socket.on('message', (message) => {
         socketIoHandler.messageHandler(message);
-        socket.broadcast.emit('message', JSON.stringify({
-            action: 'BOBBLE_DIRECTION',
-            payload: { 
-                x: Math.random()*100,
-                y: Math.random()*100
-            }
-        }));
+        // testing
+        // socket.broadcast.emit('message', JSON.stringify({
+        //     action: 'BOBBLE_DIRECTION',
+        //     payload: { 
+        //         // x: Math.random()*100,
+        //         // y: Math.random()*100,
+        //         angle: Math.random()*360
+        //     }
+        // }));
     });
+
+    // socket.on('BOBBLE_DEMO', res => {
+    //     socket.broadcast.emit('message', JSON.stringify({
+    //         action: 'BOBBLE_DIRECTION',
+    //         payload: { 
+    //             x: Math.random()*100,
+    //             y: Math.random()*100
+    //         }
+    //     }));
+    // })
 
     socket.on('disconnect', loggerStdoutNl);
 });
