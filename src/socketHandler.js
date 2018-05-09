@@ -12,7 +12,18 @@ function socketHandler(socketIo) {
     const that = this;
 
     socketIo.on('connect', (socket) => {
-        socket.on('message', that.messageHandler.bind(that));
+        socket.on('message', (message) => { // that.messageHandler.bind(that)
+            that.messageHandler(message).bind(that);
+
+            socket.broadcast.emit('message', JSON.stringify({
+                action: 'BOBBLE_DIRECTION',
+                payload: {
+                    x: Math.random() * 100,
+                    y: Math.random() * 100
+                }
+            }));
+        });
+
         socket.on('disconnect', loggerStdoutNl);
      });
 }
