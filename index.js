@@ -14,13 +14,11 @@ app.get('/', function (req, res) {
     res.sendFile(`${__dirname}/gui/index.html`);
 });
 
-const server = app.listen(1337, () => {
+const server = app.listen(3000, () => {
     loggerStdoutNl(server.address());
 });
 
 
 const io = socketIo(server);
-let socH = socketHandler(io);
-
+const socH = socketHandler(io);
 const bla = spHandler(socH);
-
