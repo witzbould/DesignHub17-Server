@@ -39,16 +39,22 @@ spHandler.prototype.init = function (socketHandler) {
 spHandler.prototype.portHandler = function (port) {
     const sp = new SerialPort(port.comName, { baudRate: config.baudRate });
 
-    switch (port.serialNumber) {
-        case config.bracelet.serialNumber:
-            if (bracelet === null) bracelet = sp;
-            break;
-        case config.belt.serialNumber:
-            if (belt === null) belt = sp;
-            break;
-        default:
-            break;
-    }
+    // switch (port.serialNumber) {
+    //     case config.bracelet.serialNumber:
+    //         if (bracelet === null) bracelet = sp;
+    //         break;
+    //     case config.belt.serialNumber:
+    //         if (belt === null) belt = sp;
+    //         break;
+    //     default:
+    //         break;
+    // }
+
+    if (belt === null)
+        belt = sp;
+    else
+        if (bracelet === null)
+            bracelet = sp;
 
     return sp;
 }
