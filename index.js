@@ -37,9 +37,19 @@ io.on('connect', (socket) => {
     socket.on('bobble', message => {
         socH.messageHandler(message);
         const msg = JSON.parse(message)
-        let angle = msg.payload.angle;
-        angle += 112.5;
-        io.emit('bobble', JSON.stringify({payload: { angle: angle}}));
+        if (msg.action === 'CHANGE_DIRECTION') {
+            let angle = msg.payload.angle;
+            angle += 112.5;
+            io.emit('bobble', JSON.stringify({action: 'CHANGE_DIRECTION', payload: { angle: angle}}));
+        }
+        if (msg.action === 'PLAYPAUSE') {
+            io.emit('bobble', JSON.stringify({action: 'PLAYPAUSE'}));
+        }
+
+        if (msg.action === 'SWITCH_EDGY') {
+            io.emit('bobble', JSON.stringify({action: 'SWITCH_EDGY'}));
+        }
+        
     })
 
     socket.on('disconnect', loggerStdoutNl);
