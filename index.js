@@ -22,7 +22,7 @@ const io = socketIo(server);
 
 io.on('connect', (socket) => {
     socket.on('message', (message) => {
-        socketIoHandler.messageHandler(message);
+        socH.messageHandler(message);
         // testing
         // socket.broadcast.emit('message', JSON.stringify({
         //     action: 'BOBBLE_DIRECTION',
@@ -34,15 +34,13 @@ io.on('connect', (socket) => {
         // }));
     });
 
-    // socket.on('BOBBLE_DEMO', res => {
-    //     socket.broadcast.emit('message', JSON.stringify({
-    //         action: 'BOBBLE_DIRECTION',
-    //         payload: { 
-    //             x: Math.random()*100,
-    //             y: Math.random()*100
-    //         }
-    //     }));
-    // })
+    socket.on('bobble', message => {
+        socH.messageHandler(message);
+        const msg = JSON.parse(message)
+        let angle = msg.payload.angle;
+        angle += 112.5;
+        io.emit('bobble', JSON.stringify({payload: { angle: angle}}));
+    })
 
     socket.on('disconnect', loggerStdoutNl);
 });
@@ -50,7 +48,7 @@ const socH = socketHandler(io);
 const bla = spHandler(socH);
 
 
-process.on('unhandledRejection', (reason, p) => {
-    // application specific logging, throwing an error, or other logic here
-    process.stderr.write(`Unhandled Rejection at: Promise ${inspect(p)}\nreason: ${inspect(reason)}`)
-})
+// process.on('unhandledRejection', (reason, p) => {
+//     // application specific logging, throwing an error, or other logic here
+//     process.stderr.write(`Unhandled Rejection at: Promise ${inspect(p)}\nreason: ${inspect(reason)}`)
+// })
