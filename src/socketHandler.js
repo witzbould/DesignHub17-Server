@@ -41,7 +41,7 @@ socketHandler.prototype.bobbleHandler = function (message) {
 socketHandler.prototype.messageHandler = function (message) {
     const msg = jsonParse(message);
 
-    switch (msg.type) {
+    switch (msg.action) {
         case 'UPDATE_ANNOTATIONS':
             loggerStdout('received: %s');
             loggerStdoutNl(JSON.stringify(msg.payload));
@@ -62,7 +62,7 @@ socketHandler.prototype.messageHandler = function (message) {
             loggerStderrNl(`SyntaxError: ${msg}`);
             break;
         default:
-            loggerStdout('Unkown Type: ');
+            loggerStdout('Unkown Action: ');
             loggerStdoutNl(msg);
     }
 }
