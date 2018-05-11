@@ -8,13 +8,34 @@ const {
 
 function socketHandler(socketIo) {
     this.spHandler = null;
+    this.io = socketIo;
 
     const that = this;
 
     socketIo.on('connect', (socket) => {
         socket.on('message', that.messageHandler.bind(that));
+        socket.on('bobble', that.bobbleHandler.bind(that));
         socket.on('disconnect', loggerStdoutNl);
-     });
+    });
+}
+
+socketHandler.prototype.bobbleHandler = function (message) {
+    const msg = jsonParse(message);
+
+    if (msg.action === 'CHANGE_DIRECTION') {
+        let angle = parseFloat(msg.payload.angle);
+        angle += 112.5;
+        this.io.emit('bobble', JSON.stringify({ action: 'CHANGE_DIRECTION', payload: { angle: angle } }));
+    }
+
+    if (msg.action === 'PLAYPAUSE') {
+        this.io.emit('bobble', JSON.stringify({ action: 'PLAYPAUSE' }));
+    }
+
+    if (msg.action === 'SWITCH_EDGY') {
+        this.io.emit('bobble', JSON.stringify({ action: 'SWITCH_EDGY' }));
+    }
+
 }
 
 socketHandler.prototype.messageHandler = function (message) {
