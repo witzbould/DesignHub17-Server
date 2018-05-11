@@ -4,6 +4,7 @@ const SerialPort = require('serialport');
 const { loggerStdoutNl } = require(`${__dirname}/src/utilities`);
 const socketHandler = require(`${__dirname}/src/socketHandler`);
 const spHandler = require(`${__dirname}/src/spHandler`);
+const { debuglog, inspect } = require('util');
 
 
 const app = express();
@@ -57,8 +58,7 @@ io.on('connect', (socket) => {
 const socH = socketHandler(io);
 const bla = spHandler(socH);
 
-
-// process.on('unhandledRejection', (reason, p) => {
-//     // application specific logging, throwing an error, or other logic here
-//     process.stderr.write(`Unhandled Rejection at: Promise ${inspect(p)}\nreason: ${inspect(reason)}`)
-// })
+process.on('unhandledRejection', (reason, p) => {
+    // application specific logging, throwing an error, or other logic here
+    process.stderr.write(`Unhandled Rejection at: Promise ${inspect(p)}\nreason: ${inspect(reason)}`)
+})
