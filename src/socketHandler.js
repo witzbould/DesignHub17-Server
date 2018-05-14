@@ -4,6 +4,13 @@ const {
     , loggerStderrNl
     , jsonParse
 } = require('./utilities');
+const fs = require('fs');
+const { performance } = require('perf_hooks');
+const csv = require('fast-csv');
+
+
+const csv$ = csv.createWriteStream();
+
 
 
 function socketHandler(socketIo) {
@@ -56,7 +63,23 @@ socketHandler.prototype.messageHandler = function (message) {
             loggerStdoutNl('PAUSE received');
             break;
         case 'VIBRATION':
+            if (this.isRecording) {
+                csv$.write({ a: msg.payload, b: performance.now() })
+            }
+
             this.sendToSerialPort('beltPort', msg.payload);
+            break;
+        case 'RECORDING':
+            this.isRecording = msg.payload;
+            loggerStdoutNl(`Recoding ${this.isRecording}`);
+            if (this.isRecording) {
+                csv$.pipe(fs.createWriteStream('data.csv'));
+            } else {
+                csv$.end();
+            }
+            break;
+        case 'EXAMPLE':
+            this.playExample();
             break;
         case 'SyntaxError':
             loggerStderrNl(`SyntaxError: ${msg}`);
@@ -65,6 +88,20 @@ socketHandler.prototype.messageHandler = function (message) {
             loggerStdout('Unkown Action: ');
             loggerStdoutNl(msg);
     }
+}
+
+socketHandler.prototype.playExample = function () {
+    let firstTimeStamp;
+    csv.fromStream(fs.createReadStream('data.csv'))
+        .transform(([payload, timeStamp]) => {
+            if (!firstTimeStamp)
+                firstTimeStamp = timeStamp;
+
+            return [payload, timeStamp - firstTimeStamp];
+        })
+        .on('data', function ([payload, timeStamp]) {
+            setTimeout(this.sendToSerialPort.bind(this), timeStamp, 'beltPort', payload);
+        }.bind(this));
 }
 
 socketHandler.prototype.sendToSerialPort = function (port, msg) {
