@@ -9,6 +9,8 @@ let bracelet = null;
 let belt = null;
 
 function spHandler(socketHandler) {
+    this.soch = socketHandler;
+
     this.init(socketHandler);
 }
 
@@ -70,8 +72,8 @@ spHandler.prototype.readyHandler = function (port) {
 spHandler.prototype.parserHandler = function (ready) {
     const parser = ready.pipe(new Readline({ delimiter: config.delimiter }));
 
-    parser.on('data', this.dataHandler);
-    parser.on('error', (err) => loggerStderrNl(err));
+    parser.on('data', this.dataHandler.bind(this));
+    parser.on('error', loggerStderrNl);
 
     return parser;
 }
@@ -85,7 +87,10 @@ spHandler.prototype.emit = function (port, msg) {
 }
 
 spHandler.prototype.dataHandler = function (data) {
-    loggerStdoutNl(data);
+    // loggerStdoutNl(data);
+    if (data === 'playPause') {
+        this.soch.playExample();
+    }
 }
 
 Object.defineProperties(spHandler.prototype, {
