@@ -63,16 +63,16 @@ socketHandler.prototype.messageHandler = function (message) {
             loggerStdoutNl('PAUSE received');
             break;
         case 'VIBRATION':
-            if (this.recording) {
+            if (this.isRecording) {
                 csv$.write({ a: msg.payload, b: performance.now() })
             }
 
             this.sendToSerialPort('beltPort', msg.payload);
             break;
         case 'RECORDING':
-            this.recording = !this.recording;
-            loggerStdoutNl(`Recoding ${this.recording}`);
-            if (this.recording) {
+            this.isRecording = msg.payload;
+            loggerStdoutNl(`Recoding ${this.isRecording}`);
+            if (this.isRecording) {
                 csv$.pipe(fs.createWriteStream('data.csv'));
             } else {
                 csv$.end();
