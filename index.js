@@ -10,9 +10,14 @@ const { inspect } = require('util');
 const app = express();
 
 app.use(express.static('gui'));
+app.use(express.static('bobble'));
 
 app.get('/', function (req, res) {
     res.sendFile(`${__dirname}/gui/index.html`);
+});
+
+app.get('/bobble', function (req, res) {
+    res.sendFile(`${__dirname}/bobble/index.html`);
 });
 
 const server = app.listen(3000, () => {

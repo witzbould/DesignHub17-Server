@@ -35,6 +35,10 @@ socketHandler.prototype.bobbleHandler = function (message) {
         this.io.emit('bobble', JSON.stringify({ action: 'CHANGE_DIRECTION', payload: { angle: angle } }));
     }
 
+    if (msg.action === 'STOP_DIRECTION') {
+        this.io.emit('bobble', JSON.stringify({ action: 'STOP_DIRECTION'}));
+    }
+
     if (msg.action === 'PLAYPAUSE') {
         this.io.emit('bobble', JSON.stringify({ action: 'PLAYPAUSE' }));
     }
