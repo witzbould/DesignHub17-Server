@@ -47,7 +47,7 @@ socketHandler.prototype.bobbleHandler = function (message) {
         this.io.emit('bobble', JSON.stringify({ action: 'SWITCH_EDGY' }));
     }
 
-}
+};
 
 socketHandler.prototype.messageHandler = function (message) {
     const msg = jsonParse(message);
@@ -68,7 +68,7 @@ socketHandler.prototype.messageHandler = function (message) {
             break;
         case 'VIBRATION':
             if (this.isRecording) {
-                csv$.write({ a: msg.payload, b: performance.now() })
+                csv$.write({ a: msg.payload, b: performance.now() });
             }
 
             this.sendToSerialPort('beltPort', msg.payload);
@@ -92,7 +92,7 @@ socketHandler.prototype.messageHandler = function (message) {
             loggerStdout('Unkown Action: ');
             loggerStdoutNl(msg);
     }
-}
+};
 
 socketHandler.prototype.playExample = function () {
     let firstTimeStamp;
@@ -106,7 +106,7 @@ socketHandler.prototype.playExample = function () {
         .on('data', function ([payload, timeStamp]) {
             setTimeout(this.sendToSerialPort.bind(this), timeStamp, 'beltPort', payload);
         }.bind(this));
-}
+};
 
 socketHandler.prototype.sendToSerialPort = function (port, msg) {
     if (!this.spHandler) {
@@ -115,7 +115,7 @@ socketHandler.prototype.sendToSerialPort = function (port, msg) {
     }
 
     this.spHandler.emit(port, msg);
-}
+};
 
 
 module.exports = (socketIo) => new socketHandler(socketIo);

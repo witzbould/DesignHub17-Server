@@ -1,8 +1,8 @@
 const SerialPort = require('serialport');
-const Ready = require('parser-ready')
-const Readline = require('parser-readline')
+const Ready = require('parser-ready');
+const Readline = require('parser-readline');
 const config = require(`${process.cwd()}/config/config`);
-const { loggerStderr, loggerStderrNl, loggerStdout, loggerStdoutNl } = require('./utilities');
+const { loggerStderr, loggerStderrNl, loggerStdoutNl } = require('./utilities');
 
 
 let bracelet = null;
@@ -25,7 +25,7 @@ spHandler.prototype.init = function (socketHandler) {
             return data;
         })
         .catch(loggerStderr);
-}
+};
 
 /**
  * @param {object} port desc
@@ -39,7 +39,6 @@ spHandler.prototype.init = function (socketHandler) {
  *   productId: 'EA60' }
  */
 spHandler.prototype.portHandler = function (port) {
-    console.log(port);
     const sp = new SerialPort(port.comName, { baudRate: config.baudRate });
 
     switch (port.serialNumber) {
@@ -60,7 +59,7 @@ spHandler.prototype.portHandler = function (port) {
     //         bracelet = sp;
 
     return sp;
-}
+};
 
 spHandler.prototype.readyHandler = function (port) {
     const ready = port.pipe(new Ready({ delimiter: 'A' }));
@@ -68,7 +67,7 @@ spHandler.prototype.readyHandler = function (port) {
     ready.on('ready', () => port.write(`C${config.delimiter}`));
 
     return ready;
-}
+};
 
 spHandler.prototype.parserHandler = function (ready) {
     const parser = ready.pipe(new Readline({ delimiter: config.delimiter }));
@@ -77,7 +76,7 @@ spHandler.prototype.parserHandler = function (ready) {
     parser.on('error', loggerStderrNl);
 
     return parser;
-}
+};
 
 spHandler.prototype.emit = function (port, msg) {
     if (this[port]) {
@@ -85,7 +84,7 @@ spHandler.prototype.emit = function (port, msg) {
     } else {
         loggerStderrNl(`The specified port (${port}) is not available.`);
     }
-}
+};
 
 spHandler.prototype.dataHandler = function (data) {
     loggerStdoutNl(data);
@@ -99,7 +98,7 @@ spHandler.prototype.dataHandler = function (data) {
         default:
             break;
     }
-}
+};
 
 Object.defineProperties(spHandler.prototype, {
     braceletPort: {

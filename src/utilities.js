@@ -8,10 +8,10 @@ const debugLogger = debuglog('debug');
  * @returns	{any}	identity function
  */
 const debugLoggerStderr = (data) => {
-    debugLogger(inspect(data))
+    debugLogger(inspect(data));
 
-    return data
-}
+    return data;
+};
 
 /**
  * Log messages to stderr
@@ -20,14 +20,14 @@ const debugLoggerStderr = (data) => {
  * @returns	{any}	identity function
  */
 const loggerStderr = (data, eol) => {
-    process.stderr.write(inspect(data))
+    process.stderr.write(inspect(data));
     if (eol === true)
-        process.stderr.write(EOL)
+        process.stderr.write(EOL);
 
-    return data
-}
+    return data;
+};
 
-const loggerStderrNl = (data) => loggerStderr(data, true)
+const loggerStderrNl = (data) => loggerStderr(data, true);
 
 /**
  * Log messages to stdout
@@ -36,14 +36,14 @@ const loggerStderrNl = (data) => loggerStderr(data, true)
  * @returns	{any}	identity function
  */
 const loggerStdout = (data, eol) => {
-    process.stdout.write(inspect(data))
+    process.stdout.write(inspect(data));
     if (eol === true)
-        process.stdout.write(EOL)
+        process.stdout.write(EOL);
 
-    return data
-}
+    return data;
+};
 
-const loggerStdoutNl = (data) => loggerStdout(data, true)
+const loggerStdoutNl = (data) => loggerStdout(data, true);
 
 
 const jsonParse = (data) => {
@@ -63,7 +63,7 @@ const jsonParse = (data) => {
     }
 
     return ret;
-}
+};
 
 module.exports = {
     debugLoggerStderr
@@ -72,4 +72,4 @@ module.exports = {
     , loggerStdout
     , loggerStdoutNl
     , jsonParse
-}
+};
