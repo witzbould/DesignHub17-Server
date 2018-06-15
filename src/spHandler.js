@@ -28,7 +28,7 @@ spHandler.prototype.init = function (socketHandler) {
 };
 
 /**
- * @param {object} port desc
+ * @param {object} port detected port configuration
  * @example
  * { comName: 'COM13',
  *   manufacturer: 'Silicon Labs',
@@ -40,6 +40,8 @@ spHandler.prototype.init = function (socketHandler) {
  */
 spHandler.prototype.portHandler = function (port) {
     const sp = new SerialPort(port.comName, { baudRate: config.baudRate });
+
+    loggerStdoutNl(port);
 
     switch (port.serialNumber) {
         case config.bracelet.serialNumber:
